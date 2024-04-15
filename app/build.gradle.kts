@@ -71,8 +71,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     // hilt
     implementation(libs.hilt.android)
-    implementation(libs.hilt.complier)
-    // androidx
+    ksp(libs.hilt.android.complier)
     implementation(libs.androidx.hilt.navigation.compose)
+    // navigation
     implementation(libs.androidx.navigation.compose)
+    // room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.complier)
+    implementation(libs.androidx.room.ktx)
 }
