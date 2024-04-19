@@ -28,6 +28,6 @@ object CoroutineDispatcherModule {
     @Singleton
     @ApplicationScope
     fun providesCoroutineScope(
-        @Dispatcher(IO) dispatcher: CoroutineDispatcher
+        @Dispatcher(Default) dispatcher: CoroutineDispatcher
     ): CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 }

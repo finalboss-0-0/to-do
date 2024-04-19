@@ -3,7 +3,7 @@ package com.finalboss.todo.core.data.source.local.database.di
 import android.content.Context
 import androidx.room.Room
 import com.finalboss.todo.core.data.source.local.database.TodoDatabase
-import com.finalboss.todo.core.data.source.local.database.dao.TaskDao
+import com.finalboss.todo.core.data.source.local.database.dao.LocalTaskDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,5 +25,5 @@ object DatabaseModule {
     }
 
     @Provides
-    fun provideTaskDao(database: TodoDatabase): TaskDao = database.taskDao()
+    fun provideLocalTaskDao(database: TodoDatabase): LocalTaskDao = database.localTaskDao()
 }

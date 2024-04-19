@@ -7,7 +7,7 @@ import com.finalboss.todo.core.data.source.local.database.model.LocalTask
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TaskDao {
+interface LocalTaskDao {
     @Query("SELECT * FROM task")
     fun observeAll(): Flow<List<LocalTask>>
 

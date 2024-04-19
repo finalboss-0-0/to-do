@@ -1,20 +1,51 @@
 package com.finalboss.todo.core.repository
 
-import com.finalboss.todo.core.data.source.local.database.dao.TaskDao
+import com.finalboss.todo.core.data.source.local.database.dao.LocalTaskDao
+import com.finalboss.todo.core.data.source.local.database.model.mapToLocalTask
+import com.finalboss.todo.core.data.source.network.NetworkDataSource
+import com.finalboss.todo.core.data.source.network.model.mapToNetwork
+import com.finalboss.todo.core.repository.di.ApplicationScope
 import com.finalboss.todo.core.repository.di.Dispatcher
 import com.finalboss.todo.core.repository.di.TodoDispatchers.IO
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Default implementation of [TaskRepository]. Single entry point for managing tasks' data.
+ *
+ * @param networkDataSource - The network data source
+ * @param localTaskDao - The local data source
+ * @param dispatcher - The dispatcher to be used for long running or complex operations, such as ID
+ * generation or mapping many models.
+ * @param scope - The coroutine scope used for deferred jobs where the result isn't important, such
+ * as sending data to the network.
+ */
 @Singleton
 class DefaultTaskRepository @Inject constructor(
-    private val localDataSource: TaskDao,
-    @Dispatcher(IO) private val dispatcher: CoroutineDispatcher
+    private val networkDataSource: NetworkDataSource,
+    private val localTaskDao: LocalTaskDao,
+    @Dispatcher(IO) private val dispatcher: CoroutineDispatcher,
+    @ApplicationScope private val applicationScope: CoroutineScope
 ): TaskRepository {
     override suspend fun createTask(title: String, description: String): String {
-        TODO("Not yet implemented")
+        // ID creation might be a complex operation so it's executed using the supplied
+        // coroutine dispatcher
+        val taskId = withContext(dispatcher) {
+            UUID.randomUUID().toString()
+        }
+        val task = Task(
+            title = title,
+            description = description,
+            id = taskId
+        )
+        localTaskDao.upsert(task.mapToLocalTask())
+        return taskId
     }
 
     override fun getTasksStream(): Flow<List<Task>> {
@@ -63,5 +94,28 @@ class DefaultTaskRepository @Inject constructor(
 
     override suspend fun deleteTask(taskId: String) {
         TODO("Not yet implemented")
+    }
+
+    /**
+     * Send the tasks from the local data source to the network data source
+     *
+     * Returns immediately after launching the job. Real apps may want to suspend here until the
+     * operation is complete or (better) use WorkManager to schedule this work. Both approaches
+     * should provide a mechanism for failures to be communicated back to the user so that
+     * they are aware that their data isn't being backed up.
+     */
+    fun saveTasksToNetwork() {
+        applicationScope.launch {
+            try {
+                val localTasks = localTaskDao.getAll()
+                val networkTasks = withContext(dispatcher) {
+                    localTasks.mapToNetwork()
+                }
+                networkDataSource.saveTasks(networkTasks)
+            } catch (e: Exception) {
+                // In a real app you'd handle the exception e.g. by exposing a `networkStatus` flow
+                // to an app level UI state holder which could then display a Toast message.
+            }
+        }
     }
 }
