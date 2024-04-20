@@ -15,7 +15,6 @@ enum class TaskStatus {
     COMPLETE
 }
 
-
 fun LocalTask.mapToNetwork() = NetworkTask(
     id = id,
     title = title,

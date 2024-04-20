@@ -20,6 +20,6 @@ fun NavGraphBuilder.tasksScreen() {
         )
 
     ) {
-        TasksRoute()
+
     }
 }

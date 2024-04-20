@@ -6,6 +6,7 @@ import com.finalboss.todo.core.data.source.network.NetworkDataSource
 import com.finalboss.todo.core.data.source.network.model.mapToNetwork
 import com.finalboss.todo.core.repository.di.ApplicationScope
 import com.finalboss.todo.core.repository.di.Dispatcher
+import com.finalboss.todo.core.repository.di.TodoDispatchers.Default
 import com.finalboss.todo.core.repository.di.TodoDispatchers.IO
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -30,7 +31,7 @@ import javax.inject.Singleton
 class DefaultTaskRepository @Inject constructor(
     private val networkDataSource: NetworkDataSource,
     private val localTaskDao: LocalTaskDao,
-    @Dispatcher(IO) private val dispatcher: CoroutineDispatcher,
+    @Dispatcher(Default) private val dispatcher: CoroutineDispatcher,
     @ApplicationScope private val applicationScope: CoroutineScope
 ): TaskRepository {
     override suspend fun createTask(title: String, description: String): String {
@@ -45,6 +46,7 @@ class DefaultTaskRepository @Inject constructor(
             id = taskId
         )
         localTaskDao.upsert(task.mapToLocalTask())
+        saveTasksToNetwork()
         return taskId
     }
 
@@ -104,7 +106,7 @@ class DefaultTaskRepository @Inject constructor(
      * should provide a mechanism for failures to be communicated back to the user so that
      * they are aware that their data isn't being backed up.
      */
-    fun saveTasksToNetwork() {
+    private fun saveTasksToNetwork() {
         applicationScope.launch {
             try {
                 val localTasks = localTaskDao.getAll()

@@ -4,10 +4,11 @@ import com.finalboss.todo.core.data.source.network.model.NetworkTask
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Inject
 
 private const val SERVICE_LATENCY_IN_MILLIS = 2000L
 
-class TaskNetworkDatasource : NetworkDataSource {
+class TaskNetworkDatasource @Inject constructor(): NetworkDataSource {
     private val accessMutex = Mutex()
     private var tasks = listOf(
         NetworkTask(
