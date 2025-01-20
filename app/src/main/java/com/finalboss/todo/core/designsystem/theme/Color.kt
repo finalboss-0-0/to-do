@@ -1,4 +1,4 @@
-package com.finalboss.todo.core.designsystem.ui.theme
+package com.finalboss.todo.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

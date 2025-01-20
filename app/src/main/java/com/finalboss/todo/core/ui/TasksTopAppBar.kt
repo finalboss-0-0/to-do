@@ -16,16 +16,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.finalboss.todo.R
-import com.finalboss.todo.core.designsystem.ui.icon.TodoIcon
-import com.finalboss.todo.core.designsystem.ui.theme.ToDoTheme
-import com.finalboss.todo.feature.task.TasksViewModel
+import com.finalboss.todo.core.designsystem.icon.TodoIcon
+import com.finalboss.todo.core.designsystem.theme.ToDoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

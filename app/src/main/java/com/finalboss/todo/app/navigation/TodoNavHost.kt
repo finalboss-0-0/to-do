@@ -4,17 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.finalboss.todo.feature.task.navigation.tasksScreen
+import com.finalboss.todo.feature.tasks.navigation.TasksRoute
+import com.finalboss.todo.feature.tasks.navigation.tasksScreen
 
 @Composable
 fun TodoNavHost(
     modifier: Modifier = Modifier,
-    startDestination: String
 ) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = TasksRoute,
         modifier = modifier
     ) {
         tasksScreen()

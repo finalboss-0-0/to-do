@@ -1,4 +1,4 @@
-package com.finalboss.todo.feature.task
+package com.finalboss.todo.feature.tasks
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

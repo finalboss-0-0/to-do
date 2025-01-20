@@ -1,4 +1,4 @@
-package com.finalboss.todo.core.designsystem.ui.theme
+package com.finalboss.todo.core.designsystem.theme
 
 import android.app.Activity
 import android.os.Build

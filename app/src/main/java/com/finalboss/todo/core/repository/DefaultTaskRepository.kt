@@ -1,15 +1,13 @@
 package com.finalboss.todo.core.repository
 
+import com.finalboss.todo.core.common.di.ApplicationScope
 import com.finalboss.todo.core.data.source.local.database.dao.LocalTaskDao
 import com.finalboss.todo.core.data.source.local.database.model.mapToLocalTask
 import com.finalboss.todo.core.data.source.network.NetworkDataSource
 import com.finalboss.todo.core.data.source.network.model.mapToNetwork
-import com.finalboss.todo.core.repository.di.ApplicationScope
-import com.finalboss.todo.core.repository.di.Dispatcher
-import com.finalboss.todo.core.repository.di.TodoDispatchers.Default
-import com.finalboss.todo.core.repository.di.TodoDispatchers.IO
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,13 +29,12 @@ import javax.inject.Singleton
 class DefaultTaskRepository @Inject constructor(
     private val networkDataSource: NetworkDataSource,
     private val localTaskDao: LocalTaskDao,
-    @Dispatcher(Default) private val dispatcher: CoroutineDispatcher,
     @ApplicationScope private val applicationScope: CoroutineScope
 ): TaskRepository {
     override suspend fun createTask(title: String, description: String): String {
         // ID creation might be a complex operation so it's executed using the supplied
         // coroutine dispatcher
-        val taskId = withContext(dispatcher) {
+        val taskId = withContext(Dispatchers.Default) {
             UUID.randomUUID().toString()
         }
         val task = Task(
@@ -110,7 +107,7 @@ class DefaultTaskRepository @Inject constructor(
         applicationScope.launch {
             try {
                 val localTasks = localTaskDao.getAll()
-                val networkTasks = withContext(dispatcher) {
+                val networkTasks = withContext(Dispatchers.IO) {
                     localTasks.mapToNetwork()
                 }
                 networkDataSource.saveTasks(networkTasks)

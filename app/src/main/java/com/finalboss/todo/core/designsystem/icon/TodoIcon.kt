@@ -1,4 +1,4 @@
-package com.finalboss.todo.core.designsystem.ui.icon
+package com.finalboss.todo.core.designsystem.icon
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
