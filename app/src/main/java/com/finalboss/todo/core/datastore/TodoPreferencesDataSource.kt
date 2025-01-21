@@ -12,6 +12,11 @@ import java.io.IOException
 class TodoPreferencesDataSource @Inject constructor(
     private val userPreferences: DataStore<UserPreferences>,
 ) {
+
+    companion object {
+        private const val TAG: String = "TodoPreferencesDataSource"
+    }
+
     val userData = userPreferences.data
         .map {
             UserData(
@@ -27,7 +32,7 @@ class TodoPreferencesDataSource @Inject constructor(
                 }
             }
         } catch (ioException: IOException) {
-            Log.e("NiaPreferences", "Failed to update user preferences", ioException)
+            Log.e(TAG, "Failed to update user preferences", ioException)
         }
     }
 }
